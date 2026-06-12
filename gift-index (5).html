@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gift Index — Find the Right Gift, Fast</title>
+<style>
+  :root{
+    --ink:#22252B;
+    --paper:#EDEAE0;
+    --card:#F7F5EE;
+    --plum:#2F4A3C;
+    --gold:#D9A441;
+    --gold-light:#F4D58D;
+    --sage:#8FA68E;
+    --line: rgba(34,37,43,0.12);
+    --radius: 6px;
+  }
+
+  @keyframes shimmer{
+    0%{ background-position: 200% 0; }
+    100%{ background-position: -200% 0; }
+  }
+  .shimmer-gold{
+    background: linear-gradient(100deg, var(--gold) 30%, var(--gold-light) 50%, var(--gold) 70%);
+    background-size: 250% 100%;
+    animation: shimmer 4s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .shimmer-gold{ animation: none; background: var(--gold); }
+  }
+
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  /* ===== Header ===== */
+  header.site-header{
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+  }
+  .shimmer-bar{
+    height: 6px;
+    width: 100%;
+  }
+  .site-header .eyebrow{
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    color: var(--gold);
+    margin: 0 0 0.75rem;
+  }
+
+  /* ===== Hero ===== */
+  .hero{
+    background: var(--card);
+    text-align: center;
+    padding: 3rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero h2{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.7rem, 5vw, 2.4rem);
+    margin: 0 0 0.75rem;
+    color: var(--plum);
+  }
+  .hero p{
+    max-width: 34rem;
+    margin: 0 auto 1.5rem;
+    color: #555;
+    font-size: 1rem;
+  }
+  .hero-cta{
+    display: inline-block;
+    background: var(--plum);
+    color: var(--paper);
+    text-decoration: none;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.4rem;
+    border-radius: var(--radius);
+    transition: background 0.15s ease;
+  }
+  .hero-cta:hover{ background: #243a2f; }
+  .site-header h1{
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    font-size: clamp(2.2rem, 6vw, 3.4rem);
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.01em;
+  }
+  .site-header p{
+    max-width: 38rem;
+    margin: 0 auto;
+    color: #C9C6BD;
+    font-size: 0.98rem;
+  }
+
+  /* ===== Catalog tab nav ===== */
+  nav.catalog{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0 1rem;
+    justify-content: center;
+  }
+  nav.catalog button{
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 0.7rem 1rem;
+    margin: 0.6rem 0.15rem 0;
+    cursor: pointer;
+    color: var(--ink);
+    position: relative;
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+  nav.catalog button::before{
+    content:"";
+    position:absolute;
+    left: 0.6rem; top: 0.4rem;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--line);
+  }
+  nav.catalog button:hover{
+    transform: translateY(-2px);
+  }
+  nav.catalog button.active{
+    background: var(--plum);
+    color: var(--paper);
+    transform: translateY(-3px);
+  }
+  nav.catalog button.active::before{
+    background: var(--gold);
+  }
+
+  /* ===== Sections ===== */
+  main{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  section.category{
+    display: none;
+  }
+  section.category.active{
+    display: block;
+    animation: fade 0.25s ease;
+  }
+  @keyframes fade{
+    from{ opacity: 0; transform: translateY(6px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+
+  .category-head{
+    display:flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.75rem;
+  }
+  .category-head .num{
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+    color: var(--sage);
+    letter-spacing: 0.1em;
+  }
+  .category-head h2{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    margin: 0;
+  }
+  .category-head p{
+    margin: 0.4rem 0 0;
+    color: #555;
+    font-size: 0.95rem;
+  }
+  .category-head .meta{
+    flex-basis: 100%;
+  }
+
+  /* ===== Card grid ===== */
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .card:hover{
+    box-shadow: 0 6px 18px rgba(34,37,43,0.10);
+    transform: translateY(-2px);
+  }
+  .card.featured{
+    border-color: var(--gold);
+  }
+  .card.featured::after{
+    content: "Editor's Pick";
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    z-index: 2;
+    background: linear-gradient(100deg, var(--gold) 30%, var(--gold-light) 50%, var(--gold) 70%);
+    background-size: 250% 100%;
+    animation: shimmer 4s linear infinite;
+  }
+  nav.catalog button.seasonal::after{
+    content: "●";
+    color: var(--gold);
+    font-size: 0.55rem;
+    margin-left: 0.35rem;
+    vertical-align: super;
+  }
+  nav.catalog button.seasonal.active::after{
+    color: var(--paper);
+  }
+  .card-photo{
+    aspect-ratio: 4 / 3;
+    background:
+      repeating-linear-gradient(135deg, transparent 0 10px, rgba(34,37,43,0.04) 10px 20px),
+      var(--paper);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom: 1px solid var(--line);
+    color: var(--sage);
+  }
+  .card-photo.tint-gold{
+    background:
+      repeating-linear-gradient(135deg, transparent 0 10px, rgba(217,164,65,0.10) 10px 20px),
+      var(--paper);
+    color: var(--gold);
+  }
+  .card-photo.tint-sage{
+    background:
+      repeating-linear-gradient(135deg, transparent 0 10px, rgba(143,166,142,0.18) 10px 20px),
+      var(--paper);
+    color: var(--sage);
+  }
+  .card-photo.tint-plum{
+    background:
+      repeating-linear-gradient(135deg, transparent 0 10px, rgba(47,74,60,0.10) 10px 20px),
+      var(--paper);
+    color: var(--plum);
+  }
+  .card-photo svg{ width: 38px; height: 38px; }
+  .card-photo .ph-label{
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-top: 0.4rem;
+    text-align: center;
+  }
+  .card-photo-wrap{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+    gap: 0.25rem;
+  }
+  .card-body{
+    padding: 0.9rem 1rem 1.1rem;
+    display:flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .price-tag{
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--plum);
+    background: rgba(74,37,69,0.08);
+    border-radius: 3px;
+    padding: 0.15rem 0.45rem;
+    align-self: flex-start;
+    margin-bottom: 0.5rem;
+  }
+  .card-body h3{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.05rem;
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+  }
+  .card-body p{
+    font-size: 0.88rem;
+    color: #555;
+    margin: 0 0 0.9rem;
+    flex: 1;
+  }
+  .amazon-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap: 0.4rem;
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration:none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.55rem 0.9rem;
+    border-radius: var(--radius);
+    transition: background 0.15s ease;
+  }
+  .amazon-btn:hover{ background: var(--plum); }
+
+  /* ===== Footer ===== */
+  footer{
+    background: var(--ink);
+    color: #B9B6AD;
+    text-align:center;
+    padding: 2.5rem 1.5rem;
+    font-size: 0.85rem;
+  }
+  footer .footer-title{
+    font-family: Georgia, serif;
+    color: var(--paper);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  footer p{ max-width: 36rem; margin: 0.4rem auto; }
+  footer a{ color: var(--gold); text-decoration: none; }
+
+  /* Disclosure banner */
+  .disclosure{
+    max-width: 1100px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.25rem;
+    font-size: 0.78rem;
+    color: #777;
+    text-align: center;
+  }
+
+  @media (max-width: 600px){
+    nav.catalog{ padding: 0 0.5rem; }
+    nav.catalog button{ font-size: 0.7rem; padding: 0.6rem 0.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="eyebrow">A Curated Catalog</p>
+  <h1>The Gift Index</h1>
+  <p>A running catalog of gifts worth giving — sorted by who you're shopping for, not by what's trending. Browse a drawer, find something good, send it off.</p>
+  <a class="back-link" href="blog.html" style="display:inline-block; margin-top:1rem; font-size:0.85rem; color: var(--gold); text-decoration:none; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace; letter-spacing:0.05em;">Read the journal →</a>
+</header>
+<div class="shimmer-bar shimmer-gold"></div>
+
+<section class="hero">
+  <h2>Find the right gift, faster</h2>
+  <p>No more endless scrolling through "best gifts" lists that don't fit anyone you actually know. Pick who you're shopping for below, and start from a shortlist that's already been narrowed down for you.</p>
+  <a class="hero-cta" href="#catalogNav">Browse the catalog ↓</a>
+</section>
+
+<nav class="catalog" id="catalogNav">
+  <button class="active" data-target="birthdays">01 · Birthdays</button>
+  <button data-target="for-her">02 · For Her</button>
+  <button data-target="for-him">03 · For Him</button>
+  <button data-target="spouse">04 · Spouse / Partner</button>
+  <button data-target="teens">05 · Teens</button>
+  <button data-target="kids">06 · Kids</button>
+  <button data-target="tech">07 · Tech Lovers</button>
+  <button data-target="under-25">08 · Under $25</button>
+  <button class="seasonal" data-target="fathers-day">09 · Father's Day</button>
+</nav>
+
+<main>
+
+  <!-- 01 BIRTHDAYS -->
+  <section class="category active" id="birthdays">
+    <div class="category-head">
+      <span class="num">DRAWER 01</span>
+      <div class="meta">
+        <h2>Birthday Gifts</h2>
+        <p>Reliable picks that work for almost anyone on the list — no guessing about size, taste, or fit required.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card featured">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 8h18M12 8c-1.5-3-5-3-5 0M12 8c1.5-3 5-3 5 0"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–45</span>
+          <h3>Custom Star Map Print</h3>
+          <p>A framed print showing the night sky from a specific date and location — a popular pick for birthdays, anniversaries, or "the day we met."</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=custom+star+map+print&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="10" r="1.5"/><path d="M9 14h6M9 17h4"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$30–60</span>
+          <h3>Portable Bluetooth Speaker</h3>
+          <p>A compact, durable speaker for outdoor hangs, kitchen dance parties, or the office desk. Easy to size up or down by budget.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=portable+bluetooth+speaker&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$35–55</span>
+          <h3>Weighted Blanket</h3>
+          <p>A heavier, evenly-weighted blanket designed to feel like a gentle hug — a favorite for anyone who likes to wind down at the end of the day.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=weighted+blanket&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 8h16v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–40 / month</span>
+          <h3>Specialty Coffee Subscription Box</h3>
+          <p>Freshly roasted beans delivered on a schedule — great for the person who already has "too much stuff" but never says no to good coffee.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=coffee+subscription+gift&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.2"/><path d="M8 6l1.5-2h5L16 6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$60–100</span>
+          <h3>Instant Print Camera</h3>
+          <p>A fun, slightly nostalgic gift that turns into shared photos and memorabilia — good for a creative friend or a couple who likes to document things.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=instant+print+camera&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-4.35-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.65-9 9-9 9z"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–35</span>
+          <h3>Scented Candle Gift Set</h3>
+          <p>A small set of well-made candles in complementary scents — low-risk, looks thoughtful, and works for almost any home.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=scented+candle+gift+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo tint-gold"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M7 6V4h10v2M3 11h18"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–40</span>
+          <h3>International Snack Mystery Box</h3>
+          <p>A box of snacks sourced from a different country each time — a fun, low-effort gift for someone who likes trying new things, and a built-in conversation starter.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=international+snack+box&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo tint-plum"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><circle cx="9" cy="9" r="0.6" fill="currentColor"/><circle cx="14" cy="8" r="0.6" fill="currentColor"/><circle cx="16" cy="13" r="0.6" fill="currentColor"/><circle cx="10" cy="15" r="0.6" fill="currentColor"/><path d="M9 9l5-1M14 8l2 5M16 13l-6 2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$30–50</span>
+          <h3>Custom Star Map Puzzle</h3>
+          <p>A jigsaw puzzle printed with the night sky from a specific date and place — combines the sentimentality of a star map with a slower, shared activity to put together.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=custom+star+map+puzzle&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 02 FOR HER -->
+  <section class="category" id="for-her">
+    <div class="category-head">
+      <span class="num">DRAWER 02</span>
+      <div class="meta">
+        <h2>For Her</h2>
+        <p>Gifts for a girlfriend, sister, friend, or anyone else on your "her" list — comfort, self-care, and small luxuries.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="9" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–35</span>
+          <h3>Travel Jewelry Organizer</h3>
+          <p>A compact roll-up case that keeps necklaces, rings, and earrings untangled — useful enough that it actually gets used.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=travel+jewelry+organizer&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="14" height="14" rx="2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–45</span>
+          <h3>Silk-Style Pillowcase Set</h3>
+          <p>A small upgrade that's easy to overlook for yourself but feels nice as a gift — gentler on skin and hair than standard cotton.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=silk+pillowcase+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$30–55</span>
+          <h3>Skincare Gift Set</h3>
+          <p>A bundled set from a reputable brand — cleanser, moisturizer, mask. A good "I noticed you've been stressed" gift.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=skincare+gift+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 9h16M9 5v4"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–40</span>
+          <h3>Custom Photo Book</h3>
+          <p>Upload photos from a trip, relationship, or year and have it printed as a hardcover book — sentimental without being generic.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=custom+photo+book&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4h12v4a6 6 0 0 1-12 0V4z"/><path d="M9 20h6M12 14v6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$30–50</span>
+          <h3>Plush Robe</h3>
+          <p>A soft, well-reviewed robe in a flattering color — comfortable, a little indulgent, and almost always well-received.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=plush+womens+robe&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–40</span>
+          <h3>Charm Bracelet (Build-Your-Own)</h3>
+          <p>A starter bracelet with a couple of charms tied to her interests — adds a personal touch without needing exact sizing.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=charm+bracelet+gift&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo tint-sage"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="3"/><circle cx="16" cy="9" r="2"/><circle cx="12" cy="16" r="2.5"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$15–28</span>
+          <h3>Shower Steamer Aromatherapy Set</h3>
+          <p>A set of dissolvable tablets that release essential oils in the shower — a small, spa-like ritual that's easy to use and doesn't take up counter space.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=shower+steamers+aromatherapy+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo tint-plum"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="3" width="12" height="18" rx="2"/><circle cx="12" cy="9" r="2.5"/><path d="M9 15h6M9 18h6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$18–30</span>
+          <h3>Tarot or Oracle Card Deck</h3>
+          <p>A well-illustrated deck with a guidebook — appeals to anyone curious about self-reflection or ritual, even casually. A distinctive gift that's a little more personal than it looks.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=tarot+card+deck+with+guidebook&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 03 FOR HIM -->
+  <section class="category" id="for-him">
+    <div class="category-head">
+      <span class="num">DRAWER 03</span>
+      <div class="meta">
+        <h2>For Him</h2>
+        <p>Gifts for a boyfriend, brother, friend, or anyone else on your "him" list — practical, a little rugged, easy to get right.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M4 11h16"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–45</span>
+          <h3>Slim Leather Wallet</h3>
+          <p>A minimalist wallet that fits comfortably in a front pocket — a practical upgrade most guys won't buy for themselves.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=slim+leather+wallet&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 9h6v6H9z"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–40</span>
+          <h3>Grooming Kit</h3>
+          <p>A clippers-and-trimmer set or a beard care kit — useful, low-maintenance, and good for daily use.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=mens+grooming+kit&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="4" width="12" height="16" rx="1"/><path d="M9 8h6M9 12h6M9 16h6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–35</span>
+          <h3>Whiskey Stones &amp; Glass Set</h3>
+          <p>Reusable chilling stones with a couple of solid glasses — a relaxed, low-pressure gift for someone who enjoys a drink at home.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=whiskey+stones+gift+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 3"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$60–150</span>
+          <h3>Fitness / Smart Watch</h3>
+          <p>A mid-range smartwatch that tracks workouts, sleep, and notifications — a gift that gets used every day.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=fitness+smart+watch&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="13" r="6"/><path d="M9 7l1.5-3h3L15 7"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$40–80</span>
+          <h3>Portable Grill</h3>
+          <p>A small, well-built grill for camping, tailgates, or balconies — built for people who like being outside and cooking.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=portable+grill&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h3v3H8zM13 13h3v3h-3z"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$15–30</span>
+          <h3>Strategy Board / Card Game</h3>
+          <p>A well-rated game for two or a group — a gift that turns into an evening, not just an object on a shelf.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=strategy+board+game+for+adults&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 04 SPOUSE / PARTNER -->
+  <section class="category" id="spouse">
+    <div class="category-head">
+      <span class="num">DRAWER 04</span>
+      <div class="meta">
+        <h2>For a Spouse or Partner</h2>
+        <p>For anniversaries, "just because," or milestone years — gifts with a little more sentiment attached.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-4.35-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.65-9 9-9 9z"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–50</span>
+          <h3>Engraved Jewelry Box</h3>
+          <p>A wooden keepsake box that can be personalized with initials, a date, or a short message — built to last and reused for years.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=engraved+jewelry+box&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M9 14h6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$35–60</span>
+          <h3>Digital Picture Frame</h3>
+          <p>A Wi-Fi photo frame you can update remotely — a thoughtful gift for couples who live apart or travel often.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=digital+wifi+picture+frame&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="16" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$50–90</span>
+          <h3>Couples Cooking or Experience Kit</h3>
+          <p>A boxed kit for making something together — pasta, cocktails, pottery — gifted as a shared activity rather than just an object.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=couples+cooking+kit+gift&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9v6M12 9v6M17 9v6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–45</span>
+          <h3>"Open When..." Letter Set</h3>
+          <p>A set of pre-printed cards or a journal prompting handwritten notes for different occasions — low-cost, high-sentiment.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=open+when+letters+gift+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M9 12h6M12 9v6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$40–80</span>
+          <h3>Matching Robe or Loungewear Set</h3>
+          <p>A coordinated set for lazy mornings — a simple way to make an ordinary day feel a little more special.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=matching+couples+robe+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$15–30</span>
+          <h3>Relationship Journal / Question Book</h3>
+          <p>A guided journal with prompts for couples to fill out together — a small, recurring gift rather than a one-time object.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=relationship+journal+for+couples&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 05 TEENS -->
+  <section class="category" id="teens">
+    <div class="category-head">
+      <span class="num">DRAWER 05</span>
+      <div class="meta">
+        <h2>For Teens</h2>
+        <p>Gifts that won't get an eye-roll — built around what teens actually use day to day.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–50</span>
+          <h3>Wireless Earbuds</h3>
+          <p>A solid mid-range pair with good battery life — one of the most-used gifts in this entire list.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=wireless+earbuds&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18l4-12h8l4 12"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$10–20</span>
+          <h3>LED Room Light Strip</h3>
+          <p>App- or remote-controlled LED strips for a bedroom or desk setup — cheap, popular, and easy to install.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=led+strip+lights+room&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="12" rx="2"/><path d="M9 20h6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$50–80</span>
+          <h3>Instant Photo Printer (Phone-Connected)</h3>
+          <p>Prints photos straight from a phone — popular for decorating walls, lockers, and scrapbooks.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=instant+photo+printer+for+phone&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M9 21h6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$30–60</span>
+          <h3>Gaming Headset</h3>
+          <p>A comfortable headset with a mic, compatible with most consoles and PCs — a strong pick for any gamer.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=gaming+headset&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="3" rx="1.5"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$40–80</span>
+          <h3>Skateboard or Longboard</h3>
+          <p>A complete, ready-to-ride board — a solid choice for a teen who's been talking about getting one.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=complete+skateboard&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20V10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10"/><path d="M4 20h16"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–45</span>
+          <h3>Everyday Backpack</h3>
+          <p>A durable backpack with a laptop sleeve — practical for school, useful for years.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=durable+backpack+laptop+sleeve&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 06 KIDS -->
+  <section class="category" id="kids">
+    <div class="category-head">
+      <span class="num">DRAWER 06</span>
+      <div class="meta">
+        <h2>For Kids</h2>
+        <p>Gifts built around play and learning — picks parents tend to approve of, too.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–50</span>
+          <h3>Building Block Set</h3>
+          <p>A large set compatible with most major brick brands — open-ended play that holds up over years.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=building+block+set+for+kids&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4v16M4 12h16" stroke-linecap="round"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$15–30</span>
+          <h3>Art Supply Kit</h3>
+          <p>A well-stocked kit with paints, markers, and paper — keeps younger kids occupied and creative.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=art+supply+kit+for+kids&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="9" r="4"/><path d="M7 21c0-3 2-5 5-5s5 2 5 5"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$15–35</span>
+          <h3>Soft Plush Toy</h3>
+          <p>A well-made plush from a recognizable, durable line — a safe, simple gift for younger kids.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=plush+toy+for+kids&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8l3 3-3 3M13 14h3"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–50</span>
+          <h3>STEM Experiment Kit</h3>
+          <p>A hands-on science or coding kit aimed at a specific age range — a gift parents are usually glad to see.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=stem+kit+for+kids&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="18" r="0.6" fill="currentColor"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$60–100</span>
+          <h3>Kids' Tablet</h3>
+          <p>A durable tablet with parental controls built in — a higher-budget option for a milestone birthday.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=kids+tablet+parental+controls&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$15–30</span>
+          <h3>Family Board Game</h3>
+          <p>A simple, well-reviewed game suited for a wide age range — good for gift exchanges with the whole family in mind.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=family+board+game+for+kids&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 07 TECH -->
+  <section class="category" id="tech">
+    <div class="category-head">
+      <span class="num">DRAWER 07</span>
+      <div class="meta">
+        <h2>Tech Lovers</h2>
+        <p>For the person whose first question about any gift is "does it connect to my phone?"</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M11 18h2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$30–60</span>
+          <h3>Smart Speaker / Voice Assistant</h3>
+          <p>A compact smart speaker for music, timers, and smart home control — an easy entry point into a connected home.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=smart+speaker+voice+assistant&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 8h6v4H9z"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–40</span>
+          <h3>High-Capacity Power Bank</h3>
+          <p>A fast-charging portable battery — unglamorous, but genuinely useful for travel and daily life.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=portable+power+bank+fast+charging&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 14a8 8 0 0 1 16 0"/><rect x="2" y="14" width="4" height="6" rx="1"/><rect x="18" y="14" width="4" height="6" rx="1"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$60–150</span>
+          <h3>Noise-Cancelling Headphones</h3>
+          <p>Over-ear headphones with active noise cancellation — a frequent "wow" gift for commuters and travelers.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=noise+cancelling+headphones&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="9" width="10" height="6" rx="1"/><path d="M9 15v3M15 15v3M8 18h8"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$10–25</span>
+          <h3>Smart Plug Starter Kit</h3>
+          <p>A pack of app- and voice-controlled outlets — an easy first step into home automation.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=smart+plug+starter+kit&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="5" width="16" height="10" rx="1"/><path d="M2 19h20"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–45</span>
+          <h3>Laptop Stand / Docking Riser</h3>
+          <p>An adjustable stand that improves posture and desk setup — a practical gift for anyone working from home.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=adjustable+laptop+stand&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="8" rx="1"/><path d="M6 16v2M18 16v2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$50–110</span>
+          <h3>Mechanical Keyboard</h3>
+          <p>A satisfying-to-type-on keyboard with customizable keys — a popular upgrade for gamers and remote workers alike.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=mechanical+keyboard&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo tint-gold"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="7" width="13" height="9" rx="2"/><circle cx="10.5" cy="11.5" r="2.5"/><path d="M19 9l3 1.5v3L19 15"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$60–120</span>
+          <h3>Mini Portable Projector</h3>
+          <p>A pocket-sized projector for movie nights on a wall or ceiling — works with a phone or streaming stick, and feels like a bigger gift than its price tag.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=mini+portable+projector&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo tint-sage"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$80–180</span>
+          <h3>E-Ink Smart Notebook</h3>
+          <p>A reusable digital notebook that feels like paper but syncs handwritten notes to a phone or cloud — a niche but genuinely useful pick for note-takers and planners.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=e+ink+smart+notebook&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 08 UNDER 25 -->
+  <section class="category" id="under-25">
+    <div class="category-head">
+      <span class="num">DRAWER 08</span>
+      <div class="meta">
+        <h2>Under $25</h2>
+        <p>Stocking stuffers, "just because" gifts, or add-ons to round out a bigger present.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="10" height="18" rx="2"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$8–15</span>
+          <h3>Phone Grip / Stand</h3>
+          <p>A small, useful add-on for video calls and watching shows hands-free — easy to toss into a card.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=phone+grip+stand&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4v9a3 3 0 0 0 6 0V4M6 4h6M18 4v9a3 3 0 0 1-6 0"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$10–18</span>
+          <h3>Novelty Socks (3-Pack)</h3>
+          <p>A low-stakes, slightly funny gift — works as a stocking stuffer or a small add-on to a bigger present.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=funny+socks+gift+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="9" r="2"/><path d="M9 16h6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$10–20</span>
+          <h3>Travel Toiletry Set</h3>
+          <p>Refillable travel-size bottles or a compact organizer — practical for anyone who travels even occasionally.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=travel+toiletry+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 4l16 16M20 4L4 20"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$8–15</span>
+          <h3>Mini Puzzle</h3>
+          <p>A small, well-designed puzzle (500 pieces or fewer) — a relaxed gift for someone who likes a slow weekend activity.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=mini+jigsaw+puzzle&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3h6l1 4H8z"/><path d="M8 7h8v12a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$12–22</span>
+          <h3>Insulated Water Bottle</h3>
+          <p>A well-rated bottle that keeps drinks cold or hot for hours — useful enough to become someone's daily bottle.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=insulated+water+bottle&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21V9M12 9c-3 0-5-2-5-5h2c0 2 1 3 3 3s3-1 3-3h2c0 3-2 5-5 5z"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$10–20</span>
+          <h3>Small Desk Plant (Real or Faux)</h3>
+          <p>A low-maintenance plant in a simple pot — adds a little life to a desk or windowsill without much upkeep.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=small+desk+plant&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 09 FATHER'S DAY -->
+  <section class="category" id="fathers-day">
+    <div class="category-head">
+      <span class="num">DRAWER 09 · SEASONAL</span>
+      <div class="meta">
+        <h2>Father's Day Gifts</h2>
+        <p>For dads, stepdads, grandfathers, and father figures — practical, a little indulgent, and easy to order in time.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card featured">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="13" r="6"/><path d="M9 7l1.5-3h3L15 7M9 13h6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$30–60</span>
+          <h3>Grill Tool Set with Case</h3>
+          <p>A sturdy set of grilling tools in a carrying case — useful for anyone who mans the grill on weekends, and looks nicer than the mismatched set most people already own.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=grill+tool+set+with+case&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–35</span>
+          <h3>Personalized Engraved Tumbler</h3>
+          <p>An insulated tumbler with a name, initials, or short message engraved on it — keeps drinks cold for hours and feels personal without much effort.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=personalized+engraved+tumbler&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16c2-4 14-4 16 0"/><path d="M6 16v3M18 16v3"/><circle cx="12" cy="9" r="3"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$40–70</span>
+          <h3>Portable Camping Hammock</h3>
+          <p>A lightweight, packable hammock with straps included — good for backyard lounging, camping trips, or a hint that it's time to take more weekends off.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=portable+camping+hammock&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="14" height="14" rx="7"/><circle cx="12" cy="12" r="2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–30</span>
+          <h3>Bluetooth Item Tracker</h3>
+          <p>A small tracker that clips to keys, a wallet, or a bag and pairs with a phone app — a practical gift for anyone who regularly misplaces things.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=bluetooth+item+tracker&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="16" height="13" rx="2"/><path d="M8 6V4h8v2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–45</span>
+          <h3>Craft Snack or Hot Sauce Gift Box</h3>
+          <p>A curated box of specialty snacks, jerky, or hot sauces — a low-effort, high-enjoyment gift for dads who like to try new things at the grill or game day.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=hot+sauce+gift+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18c0-4 3-6 8-6s8 2 8 6"/><path d="M8 12V8a4 4 0 0 1 8 0v4"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–45</span>
+          <h3>Memory Foam Slides or Slippers</h3>
+          <p>A comfortable, supportive pair for around the house or yard — an easy upgrade for someone who'd never buy these for himself.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=memory+foam+slides+mens&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+<div class="disclosure">
+  As an Amazon Associate, this site earns from qualifying purchases made through links above, at no extra cost to you.
+</div>
+
+<footer>
+  <div class="footer-title">The Gift Index</div>
+  <p>A small, ongoing catalog of gifts — updated as drawers fill up.</p>
+  <p>Built with care. Replace this footer with your own site name and contact info.</p>
+</footer>
+
+<script>
+  const buttons = document.querySelectorAll('#catalogNav button');
+  const sections = document.querySelectorAll('main .category');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
