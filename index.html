@@ -7,14 +7,29 @@
 <style>
   :root{
     --ink:#22252B;
-    --paper:#E9E6DD;
-    --card:#F8F5EE;
-    --plum:#4A2545;
-    --gold:#C99A2E;
-    --sage:#6E7F63;
+    --paper:#EDEAE0;
+    --card:#F7F5EE;
+    --plum:#2F4A3C;
+    --gold:#D9A441;
+    --gold-light:#F4D58D;
+    --sage:#8FA68E;
     --line: rgba(34,37,43,0.12);
     --radius: 6px;
   }
+
+  @keyframes shimmer{
+    0%{ background-position: 200% 0; }
+    100%{ background-position: -200% 0; }
+  }
+  .shimmer-gold{
+    background: linear-gradient(100deg, var(--gold) 30%, var(--gold-light) 50%, var(--gold) 70%);
+    background-size: 250% 100%;
+    animation: shimmer 4s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .shimmer-gold{ animation: none; background: var(--gold); }
+  }
+
 
   *{ box-sizing: border-box; }
   html{ scroll-behavior: smooth; }
@@ -33,7 +48,10 @@
     color: var(--paper);
     padding: 2.5rem 1.5rem 2rem;
     text-align: center;
-    border-bottom: 6px solid var(--gold);
+  }
+  .shimmer-bar{
+    height: 6px;
+    width: 100%;
   }
   .site-header .eyebrow{
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
@@ -43,6 +61,40 @@
     color: var(--gold);
     margin: 0 0 0.75rem;
   }
+
+  /* ===== Hero ===== */
+  .hero{
+    background: var(--card);
+    text-align: center;
+    padding: 3rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero h2{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.7rem, 5vw, 2.4rem);
+    margin: 0 0 0.75rem;
+    color: var(--plum);
+  }
+  .hero p{
+    max-width: 34rem;
+    margin: 0 auto 1.5rem;
+    color: #555;
+    font-size: 1rem;
+  }
+  .hero-cta{
+    display: inline-block;
+    background: var(--plum);
+    color: var(--paper);
+    text-decoration: none;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.4rem;
+    border-radius: var(--radius);
+    transition: background 0.15s ease;
+  }
+  .hero-cta:hover{ background: #243a2f; }
   .site-header h1{
     font-family: Georgia, "Times New Roman", serif;
     font-weight: 700;
@@ -180,7 +232,6 @@
     position: absolute;
     top: 0.6rem;
     right: 0.6rem;
-    background: var(--gold);
     color: var(--ink);
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
     font-size: 0.62rem;
@@ -189,6 +240,9 @@
     padding: 0.2rem 0.5rem;
     border-radius: 3px;
     z-index: 2;
+    background: linear-gradient(100deg, var(--gold) 30%, var(--gold-light) 50%, var(--gold) 70%);
+    background-size: 250% 100%;
+    animation: shimmer 4s linear infinite;
   }
   nav.catalog button.seasonal::after{
     content: "●";
@@ -315,6 +369,13 @@
   <p>A running catalog of gifts worth giving — sorted by who you're shopping for, not by what's trending. Browse a drawer, find something good, send it off.</p>
   <a class="back-link" href="blog.html" style="display:inline-block; margin-top:1rem; font-size:0.85rem; color: var(--gold); text-decoration:none; font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace; letter-spacing:0.05em;">Read the journal →</a>
 </header>
+<div class="shimmer-bar shimmer-gold"></div>
+
+<section class="hero">
+  <h2>Find the right gift, faster</h2>
+  <p>No more endless scrolling through "best gifts" lists that don't fit anyone you actually know. Pick who you're shopping for below, and start from a shortlist that's already been narrowed down for you.</p>
+  <a class="hero-cta" href="#catalogNav">Browse the catalog ↓</a>
+</section>
 
 <nav class="catalog" id="catalogNav">
   <button class="active" data-target="birthdays">01 · Birthdays</button>
