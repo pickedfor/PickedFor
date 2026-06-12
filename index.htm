@@ -165,11 +165,40 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    position: relative;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
   .card:hover{
     box-shadow: 0 6px 18px rgba(34,37,43,0.10);
     transform: translateY(-2px);
+  }
+  .card.featured{
+    border-color: var(--gold);
+  }
+  .card.featured::after{
+    content: "Editor's Pick";
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    z-index: 2;
+  }
+  nav.catalog button.seasonal::after{
+    content: "●";
+    color: var(--gold);
+    font-size: 0.55rem;
+    margin-left: 0.35rem;
+    vertical-align: super;
+  }
+  nav.catalog button.seasonal.active::after{
+    color: var(--paper);
   }
   .card-photo{
     aspect-ratio: 4 / 3;
@@ -296,6 +325,7 @@
   <button data-target="kids">06 · Kids</button>
   <button data-target="tech">07 · Tech Lovers</button>
   <button data-target="under-25">08 · Under $25</button>
+  <button class="seasonal" data-target="fathers-day">09 · Father's Day</button>
 </nav>
 
 <main>
@@ -311,7 +341,7 @@
     </div>
     <div class="grid">
 
-      <article class="card">
+      <article class="card featured">
         <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M12 8v13M3 8h18M12 8c-1.5-3-5-3-5 0M12 8c1.5-3 5-3 5 0"/></svg><span class="ph-label">Product photo</span></div></div>
         <div class="card-body">
           <span class="price-tag">$25–45</span>
@@ -886,6 +916,80 @@
           <h3>Small Desk Plant (Real or Faux)</h3>
           <p>A low-maintenance plant in a simple pot — adds a little life to a desk or windowsill without much upkeep.</p>
           <a class="amazon-btn" href="https://www.amazon.com/s?k=small+desk+plant&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 09 FATHER'S DAY -->
+  <section class="category" id="fathers-day">
+    <div class="category-head">
+      <span class="num">DRAWER 09 · SEASONAL</span>
+      <div class="meta">
+        <h2>Father's Day Gifts</h2>
+        <p>For dads, stepdads, grandfathers, and father figures — practical, a little indulgent, and easy to order in time.</p>
+      </div>
+    </div>
+    <div class="grid">
+
+      <article class="card featured">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="13" r="6"/><path d="M9 7l1.5-3h3L15 7M9 13h6"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$30–60</span>
+          <h3>Grill Tool Set with Case</h3>
+          <p>A sturdy set of grilling tools in a carrying case — useful for anyone who mans the grill on weekends, and looks nicer than the mismatched set most people already own.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=grill+tool+set+with+case&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M9 7h6M9 11h6M9 15h3"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–35</span>
+          <h3>Personalized Engraved Tumbler</h3>
+          <p>An insulated tumbler with a name, initials, or short message engraved on it — keeps drinks cold for hours and feels personal without much effort.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=personalized+engraved+tumbler&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16c2-4 14-4 16 0"/><path d="M6 16v3M18 16v3"/><circle cx="12" cy="9" r="3"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$40–70</span>
+          <h3>Portable Camping Hammock</h3>
+          <p>A lightweight, packable hammock with straps included — good for backyard lounging, camping trips, or a hint that it's time to take more weekends off.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=portable+camping+hammock&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="14" height="14" rx="7"/><circle cx="12" cy="12" r="2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$20–30</span>
+          <h3>Bluetooth Item Tracker</h3>
+          <p>A small tracker that clips to keys, a wallet, or a bag and pairs with a phone app — a practical gift for anyone who regularly misplaces things.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=bluetooth+item+tracker&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="16" height="13" rx="2"/><path d="M8 6V4h8v2"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–45</span>
+          <h3>Craft Snack or Hot Sauce Gift Box</h3>
+          <p>A curated box of specialty snacks, jerky, or hot sauces — a low-effort, high-enjoyment gift for dads who like to try new things at the grill or game day.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=hot+sauce+gift+set&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-photo"><div class="card-photo-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 18c0-4 3-6 8-6s8 2 8 6"/><path d="M8 12V8a4 4 0 0 1 8 0v4"/></svg><span class="ph-label">Product photo</span></div></div>
+        <div class="card-body">
+          <span class="price-tag">$25–45</span>
+          <h3>Memory Foam Slides or Slippers</h3>
+          <p>A comfortable, supportive pair for around the house or yard — an easy upgrade for someone who'd never buy these for himself.</p>
+          <a class="amazon-btn" href="https://www.amazon.com/s?k=memory+foam+slides+mens&tag=YOURTAG-20" target="_blank" rel="sponsored noopener">Find on Amazon →</a>
         </div>
       </article>
 
