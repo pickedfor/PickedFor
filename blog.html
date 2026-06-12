@@ -7,13 +7,26 @@
 <style>
   :root{
     --ink:#22252B;
-    --paper:#E9E6DD;
-    --card:#F8F5EE;
-    --plum:#4A2545;
-    --gold:#C99A2E;
-    --sage:#6E7F63;
+    --paper:#EDEAE0;
+    --card:#F7F5EE;
+    --plum:#2F4A3C;
+    --gold:#D9A441;
+    --gold-light:#F4D58D;
+    --sage:#8FA68E;
     --line: rgba(34,37,43,0.12);
     --radius: 6px;
+  }
+  @keyframes shimmer{
+    0%{ background-position: 200% 0; }
+    100%{ background-position: -200% 0; }
+  }
+  .shimmer-gold{
+    background: linear-gradient(100deg, var(--gold) 30%, var(--gold-light) 50%, var(--gold) 70%);
+    background-size: 250% 100%;
+    animation: shimmer 4s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .shimmer-gold{ animation: none; background: var(--gold); }
   }
   *{ box-sizing: border-box; }
   body{
@@ -28,7 +41,10 @@
     color: var(--paper);
     padding: 2.5rem 1.5rem 2rem;
     text-align: center;
-    border-bottom: 6px solid var(--gold);
+  }
+  .shimmer-bar{
+    height: 6px;
+    width: 100%;
   }
   .site-header .eyebrow{
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
@@ -145,6 +161,7 @@
   <p>Short write-ups on gift-giving — how to pick something good, what's worth the money, and a few honest opinions along the way.</p>
   <a class="back-link" href="index.html">&larr; Back to the gift catalog</a>
 </header>
+<div class="shimmer-bar shimmer-gold"></div>
 
 <main>
 
